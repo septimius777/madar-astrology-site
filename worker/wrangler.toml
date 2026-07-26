@@ -1,0 +1,14 @@
+# Optional — only needed if you deploy via the `wrangler` CLI instead of
+# the Cloudflare dashboard's inline editor (dashboard is simpler, see
+# backend/README.md). If using this file:
+#
+#   npm install -g wrangler
+#   wrangler login
+#   wrangler deploy
+#
+# Your Worker URL will be printed after deploy, e.g.:
+#   https://medar-telegram-proxy.<your-subdomain>.workers.dev
+
+name = "medar-telegram-proxy"
+main = "telegram-proxy.js"
+compatibility_date = "2024-01-01"

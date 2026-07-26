@@ -1,0 +1,1310 @@
+/* ==========================================================================
+   مدار (Medar) — ported from the original static site's css/style.css.
+   Everything is scoped under `.medar-page` and uses --medar-* custom
+   properties / medar- prefixed classes so it can't collide with the rest
+   of the app's Tailwind / global styles.
+   ========================================================================== */
+
+.medar-page {
+  --medar-c-night: #06070d;
+  --medar-c-night-2: #0a0c1a;
+  --medar-c-panel: #12142a;
+  --medar-c-panel-2: #191c3a;
+  --medar-c-brass: #c9a24a;
+  --medar-c-brass-soft: #e6c877;
+  --medar-c-ember: #b4573a;
+  --medar-c-parchment: #ede7d9;
+  --medar-c-mist: rgba(237, 231, 217, 0.62);
+  --medar-c-mist-dim: rgba(237, 231, 217, 0.32);
+  --medar-c-line: rgba(237, 231, 217, 0.12);
+
+  --medar-font-display: "Vazirmatn", sans-serif;
+  --medar-font-body: "Vazirmatn", sans-serif;
+
+  --medar-container: 1180px;
+  --medar-radius: 20px;
+  --medar-radius-sm: 12px;
+
+  --medar-dur-slow: 0.9s;
+  --medar-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+
+  position: relative;
+  background: var(--medar-c-night);
+  color: var(--medar-c-parchment);
+  font-family: var(--medar-font-body);
+  font-weight: 400;
+  line-height: 1.75;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  direction: rtl;
+}
+
+.medar-page * {
+  box-sizing: border-box;
+}
+.medar-page {
+  scroll-behavior: smooth;
+}
+@media (prefers-reduced-motion: reduce) {
+  .medar-page {
+    scroll-behavior: auto;
+  }
+  .medar-page *,
+  .medar-page *::before,
+  .medar-page *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+.medar-page h1,
+.medar-page h2,
+.medar-page h3 {
+  font-family: var(--medar-font-display);
+  margin: 0;
+  color: var(--medar-c-parchment);
+}
+.medar-page p {
+  margin: 0;
+  color: var(--medar-c-mist);
+}
+.medar-page a {
+  color: inherit;
+  text-decoration: none;
+}
+.medar-page button {
+  font-family: inherit;
+}
+.medar-page ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.medar-page svg {
+  display: block;
+}
+
+.medar-container {
+  max-width: var(--medar-container);
+  margin-inline: auto;
+  padding-inline: clamp(20px, 5vw, 48px);
+}
+
+/* ==========================================================================
+   Cosmic background layer (fixed, shared across whole page)
+   ========================================================================== */
+.medar-cosmos {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background: radial-gradient(
+    120% 90% at 50% 0%,
+    #0d0f22 0%,
+    #06070d 55%,
+    #030308 100%
+  );
+  overflow: hidden;
+  pointer-events: none;
+}
+.medar-cosmos canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.medar-nebula {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  opacity: 0.5;
+  will-change: transform;
+}
+.medar-nebula--a {
+  width: 60vw;
+  height: 60vw;
+  top: -10vw;
+  right: -15vw;
+  background: radial-gradient(circle, rgba(180, 87, 58, 0.35), transparent 70%);
+}
+.medar-nebula--b {
+  width: 50vw;
+  height: 50vw;
+  top: 60vh;
+  left: -15vw;
+  background: radial-gradient(circle, rgba(201, 162, 74, 0.28), transparent 70%);
+}
+.medar-nebula--c {
+  width: 45vw;
+  height: 45vw;
+  top: 130vh;
+  right: -10vw;
+  background: radial-gradient(circle, rgba(90, 80, 160, 0.28), transparent 70%);
+}
+
+.medar-grain {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+  background-size: 3px 3px;
+  mix-blend-mode: overlay;
+  opacity: 0.5;
+}
+
+@media (max-width: 760px) {
+  .medar-nebula {
+    filter: blur(30px);
+    opacity: 0.32;
+  }
+}
+
+/* ==========================================================================
+   Orbit rail — scroll-progress instrument (desktop only)
+   ========================================================================== */
+.medar-orbit-rail {
+  position: fixed;
+  right: auto;
+  left: 28px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 40;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  height: 64vh;
+}
+@media (min-width: 1000px) {
+  .medar-orbit-rail {
+    display: flex;
+  }
+}
+
+.medar-orbit-rail__line {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 1px;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    var(--medar-c-line) 10%,
+    var(--medar-c-line) 90%,
+    transparent
+  );
+}
+.medar-orbit-rail__dot {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 7px;
+  height: 7px;
+  margin-left: -3.5px;
+  margin-top: -3.5px;
+  border-radius: 50%;
+  background: var(--medar-c-brass-soft);
+  box-shadow: 0 0 10px 2px rgba(230, 200, 119, 0.7);
+  transition: top 0.12s linear;
+}
+.medar-orbit-rail__nodes {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+}
+.medar-orbit-rail__nodes li {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--medar-c-night-2);
+  border: 1px solid var(--medar-c-line);
+  color: var(--medar-c-mist-dim);
+  font-size: 11px;
+  cursor: pointer;
+  transition: color 0.4s var(--medar-ease-out), border-color 0.4s var(--medar-ease-out),
+    box-shadow 0.4s var(--medar-ease-out);
+}
+.medar-orbit-rail__nodes li.medar-is-active {
+  color: var(--medar-c-brass-soft);
+  border-color: rgba(230, 200, 119, 0.6);
+  box-shadow: 0 0 12px rgba(230, 200, 119, 0.35);
+}
+
+/* ==========================================================================
+   Header
+   ========================================================================== */
+.medar-header {
+  position: fixed;
+  inset-inline: 0;
+  top: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px clamp(20px, 5vw, 48px);
+  backdrop-filter: blur(10px);
+  background: linear-gradient(to bottom, rgba(6, 7, 13, 0.75), transparent);
+}
+.medar-brand__mark {
+  font-family: var(--medar-font-display);
+  font-weight: 800;
+  font-size: 22px;
+  letter-spacing: 0.04em;
+  color: var(--medar-c-brass-soft);
+}
+.medar-nav {
+  display: none;
+  gap: clamp(16px, 2.4vw, 32px);
+  font-size: 14.5px;
+}
+.medar-nav a {
+  color: var(--medar-c-mist);
+  transition: color 0.25s;
+  padding-block: 4px;
+}
+.medar-nav a:hover,
+.medar-nav a:focus-visible {
+  color: var(--medar-c-brass-soft);
+}
+@media (min-width: 860px) {
+  .medar-nav {
+    display: flex;
+  }
+}
+
+.medar-nav-toggle {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+.medar-nav-toggle span {
+  width: 100%;
+  height: 1.5px;
+  background: var(--medar-c-parchment);
+  border-radius: 2px;
+}
+@media (min-width: 860px) {
+  .medar-nav-toggle {
+    display: none;
+  }
+}
+
+.medar-nav.medar-nav-open {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 100%;
+  inset-inline: 0;
+  background: var(--medar-c-night-2);
+  padding: 18px clamp(20px, 5vw, 48px) 26px;
+  border-bottom: 1px solid var(--medar-c-line);
+  gap: 14px;
+}
+
+/* ==========================================================================
+   Sections — shared
+   ========================================================================== */
+.medar-section {
+  position: relative;
+  z-index: 1;
+  padding-block: clamp(90px, 14vh, 160px);
+  content-visibility: auto;
+  contain-intrinsic-size: 900px;
+}
+.medar-eyebrow {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: var(--medar-c-brass-soft);
+  margin-bottom: 18px;
+}
+.medar-section-title {
+  font-size: clamp(28px, 4vw, 44px);
+  font-weight: 700;
+  line-height: 1.35;
+  max-width: 18ch;
+  margin-bottom: 18px;
+}
+.medar-section-lead {
+  max-width: 52ch;
+  margin-bottom: 8px;
+}
+
+.medar-planet {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  will-change: transform;
+  z-index: 0;
+}
+
+/* reveal-on-scroll */
+.medar-reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity var(--medar-dur-slow) var(--medar-ease-out),
+    transform var(--medar-dur-slow) var(--medar-ease-out);
+}
+.medar-reveal.medar-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* buttons */
+.medar-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 30px;
+  border-radius: 999px;
+  font-size: 15px;
+  font-weight: 600;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: transform 0.3s var(--medar-ease-out), box-shadow 0.3s var(--medar-ease-out),
+    background 0.3s, border-color 0.3s;
+}
+.medar-btn--primary {
+  background: linear-gradient(135deg, var(--medar-c-brass-soft), var(--medar-c-brass));
+  color: #231704;
+  box-shadow: 0 8px 30px -8px rgba(201, 162, 74, 0.55);
+}
+.medar-btn--primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 34px -8px rgba(201, 162, 74, 0.7);
+}
+.medar-btn--ghost {
+  border-color: var(--medar-c-line);
+  color: var(--medar-c-parchment);
+  background: rgba(255, 255, 255, 0.02);
+}
+.medar-btn--ghost:hover {
+  border-color: rgba(230, 200, 119, 0.5);
+  color: var(--medar-c-brass-soft);
+}
+
+/* ==========================================================================
+   HERO
+   ========================================================================== */
+.medar-hero {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding-top: 120px;
+}
+.medar-hero__orrery {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 0;
+  opacity: 0.85;
+}
+.medar-orrery {
+  width: min(100vw, 720px);
+  height: min(100vw, 720px);
+  overflow: visible;
+}
+.medar-orrery__ring circle {
+  fill: none;
+  stroke: var(--medar-c-line);
+  stroke-width: 1;
+}
+.medar-orrery__ring--outer {
+  animation: medar-spin 220s linear infinite;
+  transform-origin: 300px 300px;
+}
+.medar-orrery__ring--mid {
+  animation: medar-spin-rev 160s linear infinite;
+  transform-origin: 300px 300px;
+}
+.medar-orrery__ring--mid circle {
+  stroke: rgba(201, 162, 74, 0.22);
+  stroke-dasharray: 2 10;
+}
+.medar-orrery__ring--inner {
+  animation: medar-spin 100s linear infinite;
+  transform-origin: 300px 300px;
+}
+.medar-orrery__core {
+  fill: var(--medar-c-brass-soft);
+  filter: drop-shadow(0 0 18px rgba(230, 200, 119, 0.8));
+}
+
+@keyframes medar-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes medar-spin-rev {
+  to {
+    transform: rotate(-360deg);
+  }
+}
+
+.medar-hero__content {
+  position: relative;
+  z-index: 2;
+  max-width: 760px;
+  padding-inline: 20px;
+}
+.medar-hero__title {
+  font-size: clamp(34px, 6vw, 64px);
+  font-weight: 800;
+  line-height: 1.25;
+  margin-bottom: 24px;
+}
+.medar-hero__lead {
+  font-size: clamp(15px, 2vw, 18px);
+  max-width: 52ch;
+  margin-inline: auto;
+  margin-bottom: 36px;
+}
+.medar-hero__actions {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.medar-scroll-cue {
+  position: absolute;
+  bottom: 36px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  z-index: 2;
+}
+.medar-scroll-cue span {
+  width: 1px;
+  height: 34px;
+  background: linear-gradient(to bottom, var(--medar-c-brass-soft), transparent);
+  animation: medar-cue 2.2s ease-in-out infinite;
+  display: block;
+}
+.medar-scroll-cue p {
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--medar-c-mist-dim);
+}
+@keyframes medar-cue {
+  0%,
+  100% {
+    opacity: 0.2;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* ==========================================================================
+   METHOD
+   ========================================================================== */
+.medar-planet--mercury {
+  width: 150px;
+  height: 150px;
+  top: 8%;
+  left: 8%;
+  background: radial-gradient(circle at 35% 30%, #e3d3ac, #8d7a55 55%, #392f1c 100%);
+  box-shadow: 0 0 60px -10px rgba(201, 162, 74, 0.4);
+}
+.medar-principle-grid {
+  display: grid;
+  gap: 28px;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  margin-top: 48px;
+}
+.medar-principle-card {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0));
+  border: 1px solid var(--medar-c-line);
+  border-radius: var(--medar-radius);
+  padding: 32px 28px;
+}
+.medar-principle-card__glyph {
+  font-size: 26px;
+  color: var(--medar-c-brass-soft);
+  display: block;
+  margin-bottom: 18px;
+}
+.medar-principle-card h3 {
+  font-size: 19px;
+  margin-bottom: 10px;
+}
+.medar-principle-card p {
+  font-size: 14.5px;
+}
+
+/* ==========================================================================
+   CHART TOOL
+   ========================================================================== */
+.medar-planet--moon {
+  width: 110px;
+  height: 110px;
+  top: 4%;
+  right: 6%;
+  background: radial-gradient(circle at 40% 35%, #f2ede0, #b7ae95 60%, #55503f 100%);
+  box-shadow: inset -22px -10px 0 0 rgba(6, 7, 13, 0.75), 0 0 40px -8px rgba(237, 231, 217, 0.35);
+}
+.medar-chart-tool__grid {
+  display: grid;
+  gap: 56px;
+  grid-template-columns: 1.1fr 0.9fr;
+  align-items: start;
+}
+@media (max-width: 860px) {
+  .medar-chart-tool__grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.medar-chart-tool__intro p {
+  margin-bottom: 28px;
+  max-width: 48ch;
+}
+.medar-chart-form {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  max-width: 460px;
+}
+.medar-chart-form__row {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr 1fr;
+  gap: 12px;
+}
+.medar-chart-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 12.5px;
+  color: var(--medar-c-mist-dim);
+}
+.medar-chart-form select,
+.medar-contact-form input,
+.medar-contact-form textarea {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--medar-c-line);
+  border-radius: var(--medar-radius-sm);
+  padding: 12px 14px;
+  color: var(--medar-c-parchment);
+  font-family: var(--medar-font-body);
+  font-size: 15px;
+  outline: none;
+  transition: border-color 0.25s;
+  width: 100%;
+}
+.medar-chart-form select:focus,
+.medar-contact-form input:focus,
+.medar-contact-form textarea:focus {
+  border-color: rgba(230, 200, 119, 0.6);
+}
+
+.medar-chart-tool__result {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0));
+  border: 1px solid var(--medar-c-line);
+  border-radius: var(--medar-radius);
+  padding: 40px 32px;
+  min-height: 380px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.medar-result-placeholder {
+  text-align: center;
+  opacity: 0.7;
+}
+.medar-result-placeholder__ring {
+  width: 120px;
+  height: 120px;
+  margin-inline: auto 12px;
+  opacity: 0.4;
+}
+.medar-result-placeholder__ring circle {
+  fill: none;
+  stroke: var(--medar-c-line);
+  stroke-width: 1;
+}
+.medar-result-placeholder p {
+  font-size: 13.5px;
+  margin-top: 16px;
+}
+
+.medar-zodiac-result {
+  text-align: center;
+  width: 100%;
+}
+.medar-zodiac-result__symbol {
+  font-size: 52px;
+  color: var(--medar-c-brass-soft);
+  line-height: 1;
+  margin-bottom: 6px;
+}
+.medar-zodiac-result__name {
+  font-size: 26px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.medar-zodiac-result__month {
+  font-size: 13px;
+  color: var(--medar-c-mist-dim);
+  margin-bottom: 22px;
+}
+.medar-zodiac-result__meta {
+  display: flex;
+  justify-content: center;
+  gap: 26px;
+  margin-bottom: 22px;
+  flex-wrap: wrap;
+}
+.medar-zodiac-result__meta div {
+  text-align: center;
+}
+.medar-zodiac-result__meta span {
+  display: block;
+  font-size: 11px;
+  color: var(--medar-c-mist-dim);
+  margin-bottom: 4px;
+}
+.medar-zodiac-result__meta strong {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--medar-c-brass-soft);
+}
+.medar-zodiac-result__trait {
+  font-size: 14.5px;
+  max-width: 44ch;
+  margin-inline: auto;
+}
+
+/* ==========================================================================
+   GALLERY — zodiac belt
+   ========================================================================== */
+.medar-zodiac-grid {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  margin-top: 44px;
+}
+.medar-zodiac-card {
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid var(--medar-c-line);
+  border-radius: var(--medar-radius);
+  padding: 24px 20px;
+  transition: border-color 0.3s, transform 0.3s var(--medar-ease-out), background 0.3s;
+}
+.medar-zodiac-card:hover {
+  border-color: rgba(230, 200, 119, 0.45);
+  transform: translateY(-4px);
+  background: rgba(255, 255, 255, 0.045);
+}
+.medar-zodiac-card svg {
+  width: 100%;
+  height: 90px;
+  margin-bottom: 14px;
+}
+.medar-zodiac-card svg circle {
+  fill: var(--medar-c-brass-soft);
+}
+.medar-zodiac-card svg line {
+  stroke: rgba(230, 200, 119, 0.4);
+  stroke-width: 1;
+}
+.medar-zodiac-card__symbol {
+  font-size: 20px;
+  color: var(--medar-c-brass-soft);
+  margin-inline-end: 8px;
+}
+.medar-zodiac-card h3 {
+  display: inline;
+  font-size: 16.5px;
+  font-weight: 600;
+}
+.medar-zodiac-card__month {
+  font-size: 12px;
+  color: var(--medar-c-mist-dim);
+  margin: 6px 0 10px;
+}
+.medar-zodiac-card p {
+  font-size: 13px;
+}
+
+/* ==========================================================================
+   SERVICES
+   ========================================================================== */
+.medar-planet--jupiter {
+  width: 190px;
+  height: 190px;
+  top: 6%;
+  right: 4%;
+  background: repeating-linear-gradient(178deg, rgba(255, 255, 255, 0.06) 0 3%, transparent 3% 9%),
+    radial-gradient(circle at 38% 32%, #d8b177, #a97b45 60%, #4a3420 100%);
+  box-shadow: 0 0 70px -12px rgba(180, 87, 58, 0.4);
+}
+.medar-service-grid {
+  display: grid;
+  gap: 24px;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  margin-top: 48px;
+}
+.medar-service-card {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0));
+  border: 1px solid var(--medar-c-line);
+  border-radius: var(--medar-radius);
+  padding: 30px 26px;
+}
+.medar-service-card__icon {
+  width: 38px;
+  height: 38px;
+  margin-bottom: 20px;
+  fill: none;
+  stroke: var(--medar-c-brass-soft);
+  stroke-width: 1.4;
+}
+.medar-service-card h3 {
+  font-size: 17px;
+  margin-bottom: 10px;
+}
+.medar-service-card p {
+  font-size: 13.5px;
+}
+
+/* ==========================================================================
+   TESTIMONIALS
+   ========================================================================== */
+.medar-planet--saturn {
+  width: 130px;
+  height: 130px;
+  top: 10%;
+  left: 6%;
+  background: radial-gradient(circle at 38% 32%, #e6ddc4, #9a927a 60%, #3f3a2c 100%);
+}
+.medar-planet--saturn::after {
+  content: "";
+  position: absolute;
+  inset: -24% -60%;
+  border: 10px solid rgba(201, 162, 74, 0.22);
+  border-radius: 50%;
+  transform: rotate(-18deg) scaleY(0.32);
+}
+.medar-testimonial-grid {
+  display: grid;
+  gap: 24px;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  margin-top: 48px;
+}
+.medar-testimonial-card {
+  margin: 0;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0));
+  border: 1px solid var(--medar-c-line);
+  border-radius: var(--medar-radius);
+  padding: 30px 26px;
+}
+.medar-testimonial-card p {
+  font-size: 15px;
+  color: var(--medar-c-parchment);
+  margin-bottom: 18px;
+}
+.medar-testimonial-card cite {
+  font-style: normal;
+  font-size: 12.5px;
+  color: var(--medar-c-brass-soft);
+}
+
+/* ==========================================================================
+   CONTACT
+   ========================================================================== */
+.medar-planet--comet {
+  width: 14px;
+  height: 14px;
+  top: 14%;
+  left: 12%;
+  background: var(--medar-c-parchment);
+  box-shadow: 0 0 22px 6px rgba(237, 231, 217, 0.7);
+}
+.medar-planet--comet::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: 100%;
+  width: 160px;
+  height: 2px;
+  margin-top: -1px;
+  background: linear-gradient(to left, rgba(237, 231, 217, 0.55), transparent);
+  transform: rotate(8deg);
+}
+.medar-contact__grid {
+  display: grid;
+  gap: 56px;
+  grid-template-columns: 0.9fr 1.1fr;
+}
+@media (max-width: 860px) {
+  .medar-contact__grid {
+    grid-template-columns: 1fr;
+  }
+}
+.medar-contact__intro p {
+  max-width: 42ch;
+}
+.medar-contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  max-width: 480px;
+}
+.medar-contact-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 12.5px;
+  color: var(--medar-c-mist-dim);
+}
+.medar-contact-form textarea {
+  resize: vertical;
+  font-size: 15px;
+}
+.medar-contact-form__status {
+  font-size: 13px;
+  color: var(--medar-c-brass-soft);
+  min-height: 1.5em;
+}
+
+/* ==========================================================================
+   FOOTER
+   ========================================================================== */
+.medar-footer {
+  position: relative;
+  z-index: 1;
+  border-top: 1px solid var(--medar-c-line);
+  padding-block: 44px;
+}
+.medar-footer__grid {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+}
+.medar-footer__nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  font-size: 13.5px;
+  color: var(--medar-c-mist);
+}
+.medar-footer__nav a:hover {
+  color: var(--medar-c-brass-soft);
+}
+.medar-footer__meta {
+  font-size: 12.5px;
+  color: var(--medar-c-mist-dim);
+  width: 100%;
+  order: 3;
+}
+
+/* ==========================================================================
+   Mobile perf trims
+   ========================================================================== */
+@media (max-width: 760px) {
+  .medar-planet {
+    opacity: 0.4;
+    filter: none;
+  }
+  .medar-principle-grid,
+  .medar-service-grid,
+  .medar-testimonial-grid {
+    gap: 18px;
+  }
+  .medar-section {
+    padding-block: 70px;
+  }
+}
+@media (max-width: 480px) {
+  .medar-chart-form__row {
+    grid-template-columns: 1fr;
+  }
+  .medar-zodiac-result__meta {
+    gap: 16px;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.medar-zodiac-card {
+  position: relative;
+  overflow: hidden;
+}
+.medar-zodiac-card:hover {
+  border-color: rgba(230, 200, 119, 0.45);
+  background: rgba(255, 255, 255, 0.045);
+}
+.medar-zodiac-card > * {
+  position: relative;
+  z-index: 1;
+}
+.medar-zodiac-card__glow {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+.medar-zodiac-card__symbol {
+  display: inline-block; /* reliable transform on hover/tap */
+}
+/* ==========================================================================
+   REPLACE the old GALLERY block in styles/medar.css with this one.
+
+   Delete everything from `.medar-zodiac-grid` through the last
+   `.medar-zodiac-card p { ... }` rule (the whole "GALLERY — zodiac belt"
+   section you got in the first drop), and paste this in its place.
+   The component no longer renders a card grid, so those old classes are
+   dead code now.
+   ========================================================================== */
+
+.medar-zodiac-compass {
+  display: grid;
+  grid-template-columns: minmax(260px, 460px) 1fr;
+  gap: clamp(32px, 5vw, 64px);
+  align-items: center;
+  margin-top: 48px;
+}
+@media (max-width: 860px) {
+  .medar-zodiac-compass {
+    grid-template-columns: 1fr;
+    justify-items: center;
+  }
+}
+
+/* -------------------------------------------------------------------- */
+/* The wheel                                                             */
+/* -------------------------------------------------------------------- */
+.medar-zodiac-wheel {
+  position: relative;
+  width: clamp(260px, 32vw, 440px);
+  aspect-ratio: 1;
+  margin-inline: auto;
+}
+.medar-zodiac-wheel__ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  pointer-events: none;
+}
+.medar-zodiac-wheel__ring--outer {
+  border: 1px dashed rgba(237, 231, 217, 0.16);
+  animation: medar-spin 280s linear infinite;
+}
+.medar-zodiac-wheel__ring--inner {
+  inset: 14%;
+  border: 1px dotted rgba(230, 200, 119, 0.28);
+  animation: medar-spin-rev 170s linear infinite;
+}
+.medar-zodiac-wheel__sweep {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 0deg,
+    rgba(230, 200, 119, 0.3),
+    transparent 16%,
+    transparent 100%
+  );
+  animation: medar-spin 24s linear infinite;
+  opacity: 0.55;
+  pointer-events: none;
+}
+.medar-zodiac-wheel__core {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 10px;
+  height: 10px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: var(--medar-c-brass-soft);
+  box-shadow: 0 0 20px 4px rgba(230, 200, 119, 0.6);
+}
+.medar-zodiac-wheel__nodes {
+  position: absolute;
+  inset: 0;
+}
+
+.medar-zodiac-node {
+  position: absolute;
+  width: 38px;
+  height: 38px;
+  margin: 0;
+  padding: 0;
+  border-radius: 50%;
+  border: 1px solid var(--medar-c-line);
+  background: var(--medar-c-night-2);
+  color: var(--medar-c-mist);
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: color 0.3s, border-color 0.3s, box-shadow 0.3s, background 0.3s;
+}
+.medar-zodiac-node:hover,
+.medar-zodiac-node:focus-visible {
+  color: var(--medar-c-brass-soft);
+  border-color: rgba(230, 200, 119, 0.6);
+}
+.medar-zodiac-node.medar-is-active {
+  color: #1c1305;
+  background: linear-gradient(135deg, var(--medar-c-brass-soft), var(--medar-c-brass));
+  border-color: transparent;
+  box-shadow: 0 0 22px 4px rgba(230, 200, 119, 0.55);
+}
+@media (max-width: 480px) {
+  .medar-zodiac-node {
+    width: 30px;
+    height: 30px;
+    font-size: 13px;
+  }
+}
+
+/* -------------------------------------------------------------------- */
+/* The stage (crossfading detail panel)                                  */
+/* -------------------------------------------------------------------- */
+.medar-zodiac-stage {
+  min-height: 420px;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+.medar-zodiac-stage__panel {
+  width: 100%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0));
+  border: 1px solid var(--medar-c-line);
+  border-radius: var(--medar-radius);
+  padding: 36px 32px;
+  transition: box-shadow 0.5s ease;
+}
+.medar-zodiac-stage__glyph {
+  width: 100%;
+  height: 70px;
+  opacity: 0.7;
+  margin-bottom: 8px;
+}
+.medar-zodiac-stage__glyph svg circle {
+  fill: var(--medar-c-brass-soft);
+}
+.medar-zodiac-stage__glyph svg line {
+  stroke: rgba(230, 200, 119, 0.4);
+  stroke-width: 1;
+}
+.medar-zodiac-stage__symbol {
+  font-size: 44px;
+  color: var(--medar-c-brass-soft);
+  line-height: 1;
+  margin-bottom: 6px;
+}
+.medar-zodiac-stage__name {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.medar-zodiac-stage__name span {
+  color: var(--medar-c-mist-dim);
+  font-weight: 400;
+  font-size: 16px;
+}
+.medar-zodiac-stage__month {
+  font-size: 12.5px;
+  color: var(--medar-c-mist-dim);
+  margin-bottom: 18px;
+}
+.medar-zodiac-stage__badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.medar-zodiac-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 14px;
+  border: 1px solid var(--medar-c-line);
+  border-radius: 999px;
+  font-size: 12px;
+  color: var(--medar-c-mist);
+}
+.medar-zodiac-badge i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+}
+.medar-zodiac-stage__short {
+  font-size: 15px;
+  color: var(--medar-c-parchment);
+  margin-bottom: 14px;
+}
+.medar-zodiac-stage__long {
+  font-size: 14px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ==========================================================================
+   Add these to styles/medar.css (they extend, not replace, the existing
+   .medar-contact-form rules from the original drop).
+   ========================================================================== */
+
+.medar-hp-field {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.medar-contact-form input:disabled,
+.medar-contact-form textarea:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.medar-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+.medar-contact-form__status {
+  transition: color 0.3s ease;
+}
+.medar-contact-form__status--success {
+  color: #8fd19e;
+}
+.medar-contact-form__status--error {
+  color: #e0897a;
+}

@@ -1,41 +1,46 @@
 import { useState } from "react";
+import MedarNavPanel from "./MedarNavPanel";
+import { NAV_LINKS } from "./medar-nav-links";
 
-const NAV_LINKS = [
-  { href: "#method", label: "روش" },
-  { href: "#chart", label: "زایچه‌ی تو" },
-  { href: "#gallery", label: "بروج" },
-  { href: "#services", label: "خدمات" },
-  { href: "#testimonials", label: "نظرات" },
-  { href: "#contact", label: "تماس" },
-];
-
-/** Ports .site-header / .nav-toggle / .site-nav from the original site. */
+/**
+ * Site header: brand mark + the toggle that opens the slide-in nav panel.
+ * The panel itself lives in MedarNavPanel.jsx — this file only owns the
+ * open/closed state and the trigger button.
+ */
 export default function MedarHeader() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="medar-header">
-      <a href="#hero" className="medar-brand__mark" onClick={() => setOpen(false)}>
-        مدار
-      </a>
-      <button
-        className="medar-nav-toggle"
-        aria-label="باز کردن فهرست"
-        aria-expanded={open}
-        onClick={() => setOpen((v) => !v)}
-      >
-        <span />
-        <span />
-        <span />
-      </button>
-      <nav className={`medar-nav${open ? " medar-nav-open" : ""}`}>
-        {NAV_LINKS.map((link) => (
-          <a key={link.href} href={link.href} onClick={() => setOpen(false)}>
-            {link.label}
-          </a>
-        ))}
-      </nav>
-    </header>
+    <>
+      <header className="medar-header">
+        <button
+          type="button"
+          className={`medar-nav-toggle${open ? " medar-is-open" : ""}`}
+          aria-label={open ? "بستن فهرست" : "باز کردن فهرست"}
+          aria-expanded={open}
+          aria-controls="medar-nav-panel"
+          onClick={() => setOpen((v) => !v)}
+        >
+          <span />
+          <span />
+          <span />
+        </button>
+
+
+        <a href="#hero" className="medar-brand__mark" onClick={() => setOpen(false)}>
+          مدار
+        </a>
+
+        
+      </header>
+
+      <MedarNavPanel
+        id="medar-nav-panel"
+        open={open}
+        onClose={() => setOpen(false)}
+        links={NAV_LINKS}
+      />
+    </>
   );
 }
 

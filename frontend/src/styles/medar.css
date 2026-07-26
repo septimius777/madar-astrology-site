@@ -4,7 +4,6 @@
    properties / medar- prefixed classes so it can't collide with the rest
    of the app's Tailwind / global styles.
    ========================================================================== */
-
 .medar-page {
   --medar-c-night: #06070d;
   --medar-c-night-2: #0a0c1a;
@@ -17,17 +16,13 @@
   --medar-c-mist: rgba(237, 231, 217, 0.62);
   --medar-c-mist-dim: rgba(237, 231, 217, 0.32);
   --medar-c-line: rgba(237, 231, 217, 0.12);
-
   --medar-font-display: "Vazirmatn", sans-serif;
   --medar-font-body: "Vazirmatn", sans-serif;
-
   --medar-container: 1180px;
   --medar-radius: 20px;
   --medar-radius-sm: 12px;
-
   --medar-dur-slow: 0.9s;
   --medar-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
-
   position: relative;
   background: var(--medar-c-night);
   color: var(--medar-c-parchment);
@@ -38,7 +33,6 @@
   overflow-x: hidden;
   direction: rtl;
 }
-
 .medar-page * {
   box-sizing: border-box;
 }
@@ -58,7 +52,6 @@
     scroll-behavior: auto !important;
   }
 }
-
 .medar-page h1,
 .medar-page h2,
 .medar-page h3 {
@@ -85,13 +78,11 @@
 .medar-page svg {
   display: block;
 }
-
 .medar-container {
   max-width: var(--medar-container);
   margin-inline: auto;
   padding-inline: clamp(20px, 5vw, 48px);
 }
-
 /* ==========================================================================
    Cosmic background layer (fixed, shared across whole page)
    ========================================================================== */
@@ -114,7 +105,6 @@
   width: 100%;
   height: 100%;
 }
-
 .medar-nebula {
   position: absolute;
   border-radius: 50%;
@@ -143,7 +133,6 @@
   right: -10vw;
   background: radial-gradient(circle, rgba(90, 80, 160, 0.28), transparent 70%);
 }
-
 .medar-grain {
   position: absolute;
   inset: 0;
@@ -152,14 +141,12 @@
   mix-blend-mode: overlay;
   opacity: 0.5;
 }
-
 @media (max-width: 760px) {
   .medar-nebula {
     filter: blur(30px);
     opacity: 0.32;
   }
 }
-
 /* ==========================================================================
    Orbit rail — scroll-progress instrument (desktop only)
    ========================================================================== */
@@ -180,7 +167,6 @@
     display: flex;
   }
 }
-
 .medar-orbit-rail__line {
   position: absolute;
   top: 0;
@@ -236,7 +222,6 @@
   border-color: rgba(230, 200, 119, 0.6);
   box-shadow: 0 0 12px rgba(230, 200, 119, 0.35);
 }
-
 /* ==========================================================================
    Header
    ========================================================================== */
@@ -244,7 +229,7 @@
   position: fixed;
   inset-inline: 0;
   top: 0;
-  z-index: 50;
+  z-index: 59;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -259,27 +244,14 @@
   letter-spacing: 0.04em;
   color: var(--medar-c-brass-soft);
 }
-.medar-nav {
-  display: none;
-  gap: clamp(16px, 2.4vw, 32px);
-  font-size: 14.5px;
-}
-.medar-nav a {
-  color: var(--medar-c-mist);
-  transition: color 0.25s;
-  padding-block: 4px;
-}
-.medar-nav a:hover,
-.medar-nav a:focus-visible {
-  color: var(--medar-c-brass-soft);
-}
-@media (min-width: 860px) {
-  .medar-nav {
-    display: flex;
-  }
-}
-
+/* ==========================================================================
+   Nav toggle — hamburger that morphs into an × while the panel is open.
+   Now used at every breakpoint: the header only ever shows the brand
+   mark + this trigger, and MedarNavPanel supplies the actual nav.
+   ========================================================================== */
 .medar-nav-toggle {
+  position: relative;
+  z-index: 1;
   display: flex;
   flex-direction: column;
   gap: 5px;
@@ -296,25 +268,183 @@
   height: 1.5px;
   background: var(--medar-c-parchment);
   border-radius: 2px;
+  transition: transform 0.35s var(--medar-ease-out), opacity 0.2s ease;
 }
-@media (min-width: 860px) {
-  .medar-nav-toggle {
-    display: none;
-  }
+.medar-nav-toggle.medar-is-open span:nth-child(1) {
+  transform: translateY(6.5px) rotate(45deg);
+}
+.medar-nav-toggle.medar-is-open span:nth-child(2) {
+  opacity: 0;
+  transform: scaleX(0);
+}
+.medar-nav-toggle.medar-is-open span:nth-child(3) {
+  transform: translateY(-6.5px) rotate(-45deg);
 }
 
-.medar-nav.medar-nav-open {
+/* ==========================================================================
+   Nav panel — slides in from the right edge, right → left, over a
+   blurred backdrop. Same component/markup at every viewport width; only
+   the panel's own width changes between mobile and desktop.
+   ========================================================================== */
+.medar-nav-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 55;
+  background: rgba(6, 7, 13, 0.6);
+  backdrop-filter: blur(6px);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.45s var(--medar-ease-out), visibility 0s linear 0.45s;
+}
+.medar-nav-backdrop.medar-is-open {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.45s var(--medar-ease-out);
+}
+.medar-nav-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 56;
+  width: min(88vw, 380px);
   display: flex;
   flex-direction: column;
-  position: absolute;
-  top: 100%;
-  inset-inline: 0;
-  background: var(--medar-c-night-2);
-  padding: 18px clamp(20px, 5vw, 48px) 26px;
-  border-bottom: 1px solid var(--medar-c-line);
-  gap: 14px;
+  padding: 104px 30px 34px;
+  background: linear-gradient(160deg, var(--medar-c-panel-2), var(--medar-c-night-2) 75%);
+  border-left: 1px solid var(--medar-c-line);
+  box-shadow: -40px 0 80px -24px rgba(0, 0, 0, 0.65);
+  transform: translateX(100%);
+  visibility: hidden;
+  transition: transform 0.55s var(--medar-ease-out), visibility 0s linear 0.55s;
 }
-
+.medar-nav-panel.medar-is-open {
+  transform: translateX(0);
+  visibility: visible;
+  transition: transform 0.55s var(--medar-ease-out);
+}
+@media (min-width: 640px) {
+  .medar-nav-panel {
+    width: 420px;
+    padding: 118px 40px 40px;
+  }
+}
+.medar-nav-panel__head {
+  position: absolute;
+  top: 20px;
+  left: 30px;
+  right: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+@media (min-width: 640px) {
+  .medar-nav-panel__head {
+    left: 40px;
+    right: 40px;
+  }
+}
+.medar-nav-panel__orbit {
+  position: relative;
+  width: 34px;
+  height: 34px;
+}
+.medar-nav-panel__orbit-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1px dashed rgba(230, 200, 119, 0.35);
+  animation: medar-spin 22s linear infinite;
+}
+.medar-nav-panel__orbit-dot {
+  position: absolute;
+  top: -2px;
+  left: 50%;
+  width: 5px;
+  height: 5px;
+  margin-left: -2.5px;
+  border-radius: 50%;
+  background: var(--medar-c-brass-soft);
+  box-shadow: 0 0 8px 2px rgba(230, 200, 119, 0.7);
+}
+.medar-nav-panel__close {
+  position: relative;
+  width: 34px;
+  height: 34px;
+  background: none;
+  border: 1px solid var(--medar-c-line);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: border-color 0.3s, transform 0.3s var(--medar-ease-out);
+}
+.medar-nav-panel__close:hover {
+  border-color: rgba(230, 200, 119, 0.5);
+  transform: rotate(90deg);
+}
+.medar-nav-panel__close span {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 13px;
+  height: 1.3px;
+  background: var(--medar-c-parchment);
+  border-radius: 2px;
+}
+.medar-nav-panel__close span:first-child {
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+.medar-nav-panel__close span:last-child {
+  transform: translate(-50%, -50%) rotate(-45deg);
+}
+.medar-nav-panel__nav {
+  flex: 1;
+}
+.medar-nav-panel__nav ul {
+  display: flex;
+  flex-direction: column;
+}
+.medar-nav-panel__nav a {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 15px 2px;
+  border-bottom: 1px solid var(--medar-c-line);
+  font-size: clamp(19px, 3vw, 23px);
+  font-weight: 600;
+  color: var(--medar-c-mist);
+  opacity: 0;
+  transform: translateX(22px);
+  transition: color 0.3s, opacity 0.5s var(--medar-ease-out), transform 0.5s var(--medar-ease-out);
+  transition-delay: calc(var(--medar-i, 0) * 55ms);
+}
+.medar-nav-panel.medar-is-open .medar-nav-panel__nav a {
+  opacity: 1;
+  transform: translateX(0);
+}
+.medar-nav-panel__nav a:hover,
+.medar-nav-panel__nav a:focus-visible {
+  color: var(--medar-c-brass-soft);
+}
+.medar-nav-panel__dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--medar-c-line);
+  transition: background 0.3s, box-shadow 0.3s;
+  flex-shrink: 0;
+}
+.medar-nav-panel__nav a:hover .medar-nav-panel__dot,
+.medar-nav-panel__nav a:focus-visible .medar-nav-panel__dot {
+  background: var(--medar-c-brass-soft);
+  box-shadow: 0 0 8px 2px rgba(230, 200, 119, 0.6);
+}
+.medar-nav-panel__foot {
+  font-size: 12px;
+  color: var(--medar-c-mist-dim);
+  padding-top: 18px;
+  margin-top: 18px;
+  border-top: 1px solid var(--medar-c-line);
+}
 /* ==========================================================================
    Sections — shared
    ========================================================================== */
@@ -343,7 +473,6 @@
   max-width: 52ch;
   margin-bottom: 8px;
 }
-
 .medar-planet {
   position: absolute;
   border-radius: 50%;
@@ -351,7 +480,6 @@
   will-change: transform;
   z-index: 0;
 }
-
 /* reveal-on-scroll */
 .medar-reveal {
   opacity: 0;
@@ -363,7 +491,6 @@
   opacity: 1;
   transform: translateY(0);
 }
-
 /* buttons */
 .medar-btn {
   display: inline-flex;
@@ -396,7 +523,6 @@
   border-color: rgba(230, 200, 119, 0.5);
   color: var(--medar-c-brass-soft);
 }
-
 /* ==========================================================================
    HERO
    ========================================================================== */
@@ -448,7 +574,6 @@
   fill: var(--medar-c-brass-soft);
   filter: drop-shadow(0 0 18px rgba(230, 200, 119, 0.8));
 }
-
 @keyframes medar-spin {
   to {
     transform: rotate(360deg);
@@ -459,7 +584,6 @@
     transform: rotate(-360deg);
   }
 }
-
 .medar-hero__content {
   position: relative;
   z-index: 2;
@@ -484,7 +608,6 @@
   justify-content: center;
   flex-wrap: wrap;
 }
-
 .medar-scroll-cue {
   position: absolute;
   bottom: 36px;
@@ -517,7 +640,6 @@
     opacity: 1;
   }
 }
-
 /* ==========================================================================
    METHOD
    ========================================================================== */
@@ -554,7 +676,6 @@
 .medar-principle-card p {
   font-size: 14.5px;
 }
-
 /* ==========================================================================
    CHART TOOL
    ========================================================================== */
@@ -577,7 +698,6 @@
     grid-template-columns: 1fr;
   }
 }
-
 .medar-chart-tool__intro p {
   margin-bottom: 28px;
   max-width: 48ch;
@@ -619,7 +739,6 @@
 .medar-contact-form textarea:focus {
   border-color: rgba(230, 200, 119, 0.6);
 }
-
 .medar-chart-tool__result {
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0));
   border: 1px solid var(--medar-c-line);
@@ -649,7 +768,6 @@
   font-size: 13.5px;
   margin-top: 16px;
 }
-
 .medar-zodiac-result {
   text-align: center;
   width: 100%;
@@ -696,7 +814,6 @@
   max-width: 44ch;
   margin-inline: auto;
 }
-
 /* ==========================================================================
    GALLERY — zodiac belt
    ========================================================================== */
@@ -748,7 +865,6 @@
 .medar-zodiac-card p {
   font-size: 13px;
 }
-
 /* ==========================================================================
    SERVICES
    ========================================================================== */
@@ -788,7 +904,6 @@
 .medar-service-card p {
   font-size: 13.5px;
 }
-
 /* ==========================================================================
    TESTIMONIALS
    ========================================================================== */
@@ -830,7 +945,6 @@
   font-size: 12.5px;
   color: var(--medar-c-brass-soft);
 }
-
 /* ==========================================================================
    CONTACT
    ========================================================================== */
@@ -888,40 +1002,6 @@
   color: var(--medar-c-brass-soft);
   min-height: 1.5em;
 }
-
-/* ==========================================================================
-   FOOTER
-   ========================================================================== */
-.medar-footer {
-  position: relative;
-  z-index: 1;
-  border-top: 1px solid var(--medar-c-line);
-  padding-block: 44px;
-}
-.medar-footer__grid {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 18px;
-}
-.medar-footer__nav {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 18px;
-  font-size: 13.5px;
-  color: var(--medar-c-mist);
-}
-.medar-footer__nav a:hover {
-  color: var(--medar-c-brass-soft);
-}
-.medar-footer__meta {
-  font-size: 12.5px;
-  color: var(--medar-c-mist-dim);
-  width: 100%;
-  order: 3;
-}
-
 /* ==========================================================================
    Mobile perf trims
    ========================================================================== */
@@ -947,47 +1027,6 @@
     gap: 16px;
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 .medar-zodiac-card {
   position: relative;
   overflow: hidden;
@@ -1012,14 +1051,12 @@
 }
 /* ==========================================================================
    REPLACE the old GALLERY block in styles/medar.css with this one.
-
    Delete everything from `.medar-zodiac-grid` through the last
    `.medar-zodiac-card p { ... }` rule (the whole "GALLERY — zodiac belt"
    section you got in the first drop), and paste this in its place.
    The component no longer renders a card grid, so those old classes are
    dead code now.
    ========================================================================== */
-
 .medar-zodiac-compass {
   display: grid;
   grid-template-columns: minmax(260px, 460px) 1fr;
@@ -1033,7 +1070,6 @@
     justify-items: center;
   }
 }
-
 /* -------------------------------------------------------------------- */
 /* The wheel                                                             */
 /* -------------------------------------------------------------------- */
@@ -1087,7 +1123,6 @@
   position: absolute;
   inset: 0;
 }
-
 .medar-zodiac-node {
   position: absolute;
   width: 38px;
@@ -1123,7 +1158,6 @@
     font-size: 13px;
   }
 }
-
 /* -------------------------------------------------------------------- */
 /* The stage (crossfading detail panel)                                  */
 /* -------------------------------------------------------------------- */
@@ -1205,79 +1239,10 @@
 .medar-zodiac-stage__long {
   font-size: 14px;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /* ==========================================================================
    Add these to styles/medar.css (they extend, not replace, the existing
    .medar-contact-form rules from the original drop).
    ========================================================================== */
-
 .medar-hp-field {
   position: absolute;
   left: -9999px;
@@ -1286,19 +1251,16 @@
   opacity: 0;
   pointer-events: none;
 }
-
 .medar-contact-form input:disabled,
 .medar-contact-form textarea:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
-
 .medar-btn:disabled {
   opacity: 0.6;
   cursor: not-allowed;
   transform: none !important;
 }
-
 .medar-contact-form__status {
   transition: color 0.3s ease;
 }

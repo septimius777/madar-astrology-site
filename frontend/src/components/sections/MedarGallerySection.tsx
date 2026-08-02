@@ -1,4 +1,10 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type CSSProperties,
+} from "react";
 import {
   AnimatePresence,
   motion,
@@ -20,6 +26,23 @@ const ELEMENT_COLOR: Record<string, string> = {
 
 const AUTO_ADVANCE_MS = 4200;
 const RESUME_DELAY_MS = 3200;
+const SIGN_COUNT = ZODIAC.length;
+const STEP_DEG = 360 / SIGN_COUNT;
+
+/**
+ * Position (in %) + angle (0deg = 12 o'clock, clockwise) of sign `index`
+ * around the wheel — same convention the chart section's beam uses, so the
+ * light and the node math never disagree.
+ */
+function nodePosition(index: number, radius = 42) {
+  const angleDeg = index * STEP_DEG;
+  const rad = ((angleDeg - 90) * Math.PI) / 180;
+  return {
+    angleDeg,
+    x: 50 + Math.cos(rad) * radius,
+    y: 50 + Math.sin(rad) * radius,
+  };
+}
 
 const wheelVariants = {
   hidden: {},
@@ -47,8 +70,20 @@ export default function MedarGallerySection() {
   const prefersReducedMotion = useReducedMotion();
   const sectionRef = useRef<HTMLElement | null>(null);
   const [activeIndex, setActiveIndex] = useState(0);
+  // Becomes true the moment the person actually clicks/taps a sign — from
+  // then on the beam stays locked on their pick and the auto-cycle never
+  // resumes, no matter how much time passes.
+  const [locked, setLocked] = useState(false);
   const interacting = useRef(false);
   const resumeTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+
+  // The beam's rotation, tracked as a running total (not clamped to 0–360)
+  // so it always turns the short way to the next sign — including the
+  // 12 → 1 wrap — instead of ever spinning backwards through the whole
+  // wheel. This is what keeps it visually locked to whichever node is lit.
+  const rotationRef = useRef(0);
+  const prevIndexRef = useRef(0);
+  const [beamAngle, setBeamAngle] = useState(0);
 
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -57,19 +92,32 @@ export default function MedarGallerySection() {
   const wheelRotate = useTransform(scrollYProgress, [0, 1], [-10, 10]);
   const wheelScale = useTransform(scrollYProgress, [0, 0.5, 1], [0.88, 1, 0.88]);
 
-  // Auto-cycle the active sign, unless the person is actively hovering/
-  // focusing/tapping a node (see `selectSign` below).
+  // Auto-cycle the active sign, unless the person is hovering/focusing a
+  // node, or has already locked one in with a click.
   useEffect(() => {
-    if (prefersReducedMotion) return;
+    if (prefersReducedMotion || locked) return;
     const id = setInterval(() => {
       if (!interacting.current) {
-        setActiveIndex((i) => (i + 1) % ZODIAC.length);
+        setActiveIndex((i) => (i + 1) % SIGN_COUNT);
       }
     }, AUTO_ADVANCE_MS);
     return () => clearInterval(id);
-  }, [prefersReducedMotion]);
+  }, [prefersReducedMotion, locked]);
 
-  function selectSign(index: number) {
+  // Keep the beam's running rotation in sync with whichever sign is active,
+  // always turning the shorter way around the circle.
+  useEffect(() => {
+    const prev = prevIndexRef.current;
+    let diff = (activeIndex - prev) % SIGN_COUNT;
+    if (diff > SIGN_COUNT / 2) diff -= SIGN_COUNT;
+    if (diff < -SIGN_COUNT / 2) diff += SIGN_COUNT;
+    rotationRef.current += diff * STEP_DEG;
+    prevIndexRef.current = activeIndex;
+    setBeamAngle(rotationRef.current);
+  }, [activeIndex]);
+
+  function previewSign(index: number) {
+    if (locked) return; // once someone has picked a sign, hovering others no longer steals the beam
     setActiveIndex(index);
     interacting.current = true;
     clearTimeout(resumeTimer.current);
@@ -78,17 +126,15 @@ export default function MedarGallerySection() {
     }, RESUME_DELAY_MS);
   }
 
+  function selectSign(index: number) {
+    clearTimeout(resumeTimer.current);
+    interacting.current = true;
+    setActiveIndex(index);
+    setLocked(true);
+  }
+
   const nodes = useMemo(
-    () =>
-      ZODIAC.map((sign, index) => {
-        const angle = (index / ZODIAC.length) * Math.PI * 2 - Math.PI / 2;
-        return {
-          sign,
-          index,
-          x: 50 + Math.cos(angle) * 42,
-          y: 50 + Math.sin(angle) * 42,
-        };
-      }),
+    () => ZODIAC.map((sign, index) => ({ sign, index, ...nodePosition(index) })),
     []
   );
 
@@ -121,7 +167,19 @@ export default function MedarGallerySection() {
                 : { rotate: wheelRotate, scale: wheelScale }
             }
           >
-            <div className="medar-zodiac-wheel__sweep" aria-hidden="true" />
+            <div
+              className={
+                locked
+                  ? "medar-zodiac-wheel__sweep medar-zodiac-wheel__sweep--locked"
+                  : "medar-zodiac-wheel__sweep"
+              }
+              style={
+                {
+                  "--medar-sweep-angle": `${beamAngle}deg`,
+                } as CSSProperties
+              }
+              aria-hidden="true"
+            />
             <div className="medar-zodiac-wheel__ring medar-zodiac-wheel__ring--outer" />
             <div className="medar-zodiac-wheel__ring medar-zodiac-wheel__ring--inner" />
 
@@ -141,8 +199,8 @@ export default function MedarGallerySection() {
                     index === activeIndex ? " medar-is-active" : ""
                   }`}
                   style={{ left: `${x}%`, top: `${y}%`, x: "-50%", y: "-50%" }}
-                  onMouseEnter={() => selectSign(index)}
-                  onFocus={() => selectSign(index)}
+                  onMouseEnter={() => previewSign(index)}
+                  onFocus={() => previewSign(index)}
                   onClick={() => selectSign(index)}
                   whileHover={prefersReducedMotion ? undefined : { scale: 1.18 }}
                   whileTap={prefersReducedMotion ? undefined : { scale: 0.95 }}

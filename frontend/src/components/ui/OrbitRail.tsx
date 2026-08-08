@@ -21,9 +21,6 @@ export default function OrbitRail() {
   const listRef = useRef<HTMLUListElement | null>(null);
 
   useEffect(() => {
-    const prefersReducedMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
-    ).matches;
 
     const sections = NODES.map((n) => document.getElementById(n.target)).filter(
       (el): el is HTMLElement => Boolean(el)

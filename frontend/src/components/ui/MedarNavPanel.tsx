@@ -1,5 +1,17 @@
 import { useEffect, useRef } from "react";
 
+interface NavLink {
+  href: string;
+  label: string;
+}
+
+interface MedarNavPanelProps {
+  id?: string;
+  open: boolean;
+  onClose: () => void;
+  links: NavLink[];
+}
+
 /**
  * Slide-in navigation drawer — docks to the right edge and slides
  * right → left into view. Owns its own behaviour (escape key, backdrop
@@ -11,14 +23,16 @@ export default function MedarNavPanel({
   open,
   onClose,
   links,
-}) {
-  const firstLinkRef = useRef(null);
+}: MedarNavPanelProps) {
+  const firstLinkRef = useRef<HTMLAnchorElement | null>(null);
 
   // Lock page scroll while the panel is open.
   useEffect(() => {
     if (!open) return;
+
     const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
+
     return () => {
       document.body.style.overflow = prevOverflow;
     };
@@ -27,12 +41,20 @@ export default function MedarNavPanel({
   // Escape to close, focus the first link on open.
   useEffect(() => {
     if (!open) return;
+
     firstLinkRef.current?.focus();
-    const onKey = (event) => {
-      if (event.key === "Escape") onClose();
+
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        onClose();
+      }
     };
+
     document.addEventListener("keydown", onKey);
-    return () => document.removeEventListener("keydown", onKey);
+
+    return () => {
+      document.removeEventListener("keydown", onKey);
+    };
   }, [open, onClose]);
 
   return (
@@ -54,6 +76,7 @@ export default function MedarNavPanel({
             <span className="medar-nav-panel__orbit-ring" />
             <span className="medar-nav-panel__orbit-dot" />
           </span>
+
           <button
             type="button"
             className="medar-nav-panel__close"
@@ -69,7 +92,14 @@ export default function MedarNavPanel({
         <nav className="medar-nav-panel__nav">
           <ul>
             {links.map((link, i) => (
-              <li key={link.href} style={{ "--medar-i": i }}>
+              <li
+                key={link.href}
+                style={
+                  {
+                    "--medar-i": i,
+                  } as React.CSSProperties
+                }
+              >
                 <a
                   href={link.href}
                   ref={i === 0 ? firstLinkRef : null}
@@ -77,7 +107,9 @@ export default function MedarNavPanel({
                   onClick={onClose}
                 >
                   <span className="medar-nav-panel__dot" aria-hidden="true" />
-                  <span className="medar-nav-panel__label">{link.label}</span>
+                  <span className="medar-nav-panel__label">
+                    {link.label}
+                  </span>
                 </a>
               </li>
             ))}

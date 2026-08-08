@@ -1,0 +1,411 @@
+/* =========================================================
+   Sun → Mercury
+   Lightweight + stable end state
+   ========================================================= */
+
+:root {
+  --p: 0;
+  --raw: 0;
+  --scale: 1.35;
+  --sun-fade: 1;
+  --merc-in: 0;
+  --glow: 1;
+  --sun-label: 1;
+  --merc-label: 0;
+  --size: min(78vw, 480px);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: #030306;
+  color: #e6e4e0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+.stm-root {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+}
+
+.stm-runway {
+  height: 280vh; /* shorter = less lag on long pages */
+  pointer-events: none;
+}
+
+/* ---------- Space (one star layer only) ---------- */
+.stm-space {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background: radial-gradient(ellipse 120% 80% at 50% 45%, #0b0b14 0%, #030306 70%);
+  overflow: hidden;
+}
+
+.stm-stars {
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(1px 1px at 20px 30px, #fff, transparent),
+    radial-gradient(1px 1px at 50px 80px, rgba(255,255,255,0.7), transparent),
+    radial-gradient(1.2px 1.2px at 100px 40px, #fff, transparent),
+    radial-gradient(1px 1px at 140px 90px, rgba(255,255,255,0.5), transparent),
+    radial-gradient(1px 1px at 180px 50px, #fff, transparent),
+    radial-gradient(1.1px 1.1px at 70px 130px, rgba(255,240,200,0.55), transparent),
+    radial-gradient(1px 1px at 30px 160px, rgba(255,255,255,0.6), transparent),
+    radial-gradient(1.3px 1.3px at 160px 20px, #fff, transparent);
+  background-size: 220px 180px;
+  opacity: calc(0.15 + var(--p) * 0.75);
+  will-change: opacity;
+}
+
+/* Warm ambient – fades with Sun */
+.stm-ambient {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  background: radial-gradient(
+    circle at 50% 48%,
+    rgba(255, 130, 30, calc(0.16 * var(--glow))) 0%,
+    transparent 60%
+  );
+  pointer-events: none;
+}
+
+/* ---------- Stage ---------- */
+.stm-stage {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+}
+
+.stm-body {
+  position: relative;
+  width: var(--size);
+  height: var(--size);
+  transform: scale(var(--scale));
+  will-change: transform;
+}
+
+/* ---------- Corona (2 layers, lighter blur) ---------- */
+.stm-corona {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.stm-corona-outer {
+  inset: -40%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 150, 40, calc(0.3 * var(--glow))) 0%,
+    rgba(255, 80, 10, calc(0.1 * var(--glow))) 45%,
+    transparent 70%
+  );
+  filter: blur(18px);
+}
+
+.stm-corona-inner {
+  inset: -12%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 210, 100, calc(0.45 * var(--glow))) 0%,
+    transparent 70%
+  );
+  filter: blur(6px);
+}
+
+/* ---------- SUN ---------- */
+.stm-sun {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  overflow: hidden;
+  opacity: var(--sun-fade);
+  will-change: opacity;
+}
+
+.stm-sun-core {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 38% 32%,
+    #fffef5 0%,
+    #ffe566 18%,
+    #ffb300 42%,
+    #ff6a00 68%,
+    #d93400 100%
+  );
+  box-shadow:
+    0 0 40px rgba(255, 150, 30, 0.85),
+    0 0 90px rgba(255, 90, 10, 0.45),
+    inset 0 0 40px rgba(255, 255, 200, 0.3);
+}
+
+/* Only 2 flares, no continuous animation on mobile */
+.stm-flare {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(255, 200, 80, 0.7), transparent 70%);
+  filter: blur(6px);
+  pointer-events: none;
+  mix-blend-mode: screen;
+}
+
+.stm-flare-a {
+  width: 55%; height: 28%;
+  top: -8%; left: 22%;
+  opacity: 0.7;
+}
+
+.stm-flare-b {
+  width: 38%; height: 24%;
+  bottom: -6%; right: 12%;
+  opacity: 0.55;
+}
+
+/* ---------- MERCURY (simpler, clearer) ---------- */
+.stm-mercury {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  overflow: hidden;
+  opacity: var(--merc-in);
+  will-change: opacity;
+  pointer-events: none;
+}
+
+/* Single surface layer – gray-brown like real Mercury */
+.stm-merc-surface {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background:
+    /* brighter highlands */
+    radial-gradient(ellipse 45% 40% at 28% 24%, #c2baac 0%, transparent 70%),
+    radial-gradient(ellipse 35% 30% at 65% 40%, #a89f90 0%, transparent 70%),
+    /* darker plains */
+    radial-gradient(ellipse 50% 45% at 55% 62%, #5a544a 0%, transparent 70%),
+    /* base */
+    linear-gradient(150deg, #7a7368 0%, #524c43 40%, #2e2a25 100%);
+  box-shadow:
+    inset -20px -14px 28px rgba(0, 0, 0, 0.5),
+    inset 10px 8px 18px rgba(255, 250, 230, 0.05);
+}
+
+/* Craters – fewer, clearer */
+.stm-merc-craters {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+}
+
+.stm-merc-craters .c {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 38% 32%,
+    rgba(22, 20, 16, 0.9) 0%,
+    rgba(48, 44, 38, 0.5) 40%,
+    transparent 72%
+  );
+  box-shadow:
+    inset 1.5px 1.5px 3px rgba(0, 0, 0, 0.45),
+    -0.5px -0.5px 0 rgba(170, 160, 145, 0.2);
+}
+
+.c1 { width: 24%; height: 24%; top: 12%; left: 16%; }
+.c2 { width: 18%; height: 18%; top: 52%; left: 48%; }
+.c3 { width: 14%; height: 14%; top: 58%; left: 20%; }
+.c4 { width: 11%; height: 11%; top: 24%; left: 60%; }
+.c5 { width: 9%;  height: 9%;  top: 70%; left: 36%; }
+.c6 { width: 12%; height: 12%; top: 36%; left: 10%; }
+.c7 { width: 8%;  height: 8%;  top: 16%; left: 44%; }
+.c8 { width: 10%; height: 10%; top: 66%; left: 66%; }
+
+/* Terminator */
+.stm-merc-terminator {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: linear-gradient(
+    110deg,
+    transparent 25%,
+    rgba(0, 0, 0, 0.1) 48%,
+    rgba(0, 0, 0, 0.45) 70%,
+    rgba(0, 0, 0, 0.75) 100%
+  );
+  pointer-events: none;
+}
+
+/* ---------- Labels – controlled by JS vars, stay visible ---------- */
+.stm-label {
+  position: fixed;
+  left: 50%;
+  text-align: center;
+  z-index: 20;
+  pointer-events: none;
+  width: min(90vw, 420px);
+  will-change: opacity, transform;
+}
+
+.stm-label .tag {
+  display: block;
+  font-size: 0.65rem;
+  letter-spacing: 0.35em;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+}
+
+.stm-label h1 {
+  font-size: clamp(2.3rem, 8vw, 3.6rem);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  line-height: 1.05;
+  margin-bottom: 0.3rem;
+  text-shadow: 0 2px 20px rgba(0, 0, 0, 0.65);
+}
+
+.stm-label p {
+  font-size: 0.9rem;
+  opacity: 0.65;
+  letter-spacing: 0.04em;
+}
+
+.stm-label-sun {
+  top: 11%;
+  opacity: var(--sun-label);
+  transform: translateX(-50%) translateY(calc((1 - var(--sun-label)) * -20px));
+}
+
+.stm-label-sun .tag { color: rgba(255, 200, 100, 0.9); }
+.stm-label-sun h1   { color: #ffebb0; }
+
+.stm-label-mercury {
+  bottom: 14%;
+  opacity: var(--merc-label);
+  transform: translateX(-50%) translateY(calc((1 - var(--merc-label)) * 24px));
+}
+
+.stm-label-mercury .tag { color: rgba(180, 170, 150, 0.9); }
+.stm-label-mercury h1   { color: #d2caba; }
+
+/* ---------- Progress ---------- */
+.stm-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  z-index: 40;
+  background: rgba(255, 255, 255, 0.05);
+  pointer-events: none;
+}
+
+.stm-bar-fill {
+  height: 100%;
+  width: calc(var(--raw) * 100%);
+  background: linear-gradient(90deg, #ff9a2e, #e04e00);
+  box-shadow: 0 0 8px rgba(255, 140, 30, 0.45);
+}
+
+/* ---------- Hint ---------- */
+.stm-hint {
+  position: fixed;
+  bottom: 22px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  opacity: calc(1 - var(--p) * 3.5);
+  pointer-events: none;
+}
+
+.stm-hint span {
+  font-size: 0.62rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: rgba(255, 210, 140, 0.7);
+}
+
+.stm-hint i {
+  display: block;
+  width: 1px;
+  height: 32px;
+  background: linear-gradient(to bottom, rgba(255, 180, 70, 0.85), transparent);
+  animation: hint 2s ease-in-out infinite;
+  transform-origin: top;
+}
+
+@keyframes hint {
+  0%, 100% { transform: scaleY(1); opacity: 0.8; }
+  50%      { transform: scaleY(0.6); opacity: 0.3; }
+}
+
+/* ---------- Mobile – aggressively lighter ---------- */
+@media (max-width: 700px) {
+  :root {
+    --size: min(86vw, 340px);
+  }
+
+  .stm-runway {
+    height: 240vh;
+  }
+
+  .stm-corona-outer {
+    inset: -28%;
+    filter: blur(12px);
+  }
+
+  .stm-corona-inner {
+    filter: blur(4px);
+  }
+
+  .stm-flare {
+    display: none; /* kill flares on phone */
+  }
+
+  .stm-stars {
+    background-size: 180px 150px;
+    opacity: calc(0.2 + var(--p) * 0.6);
+  }
+
+  .stm-label h1 {
+    font-size: 2rem;
+  }
+
+  .stm-hint i {
+    animation: none;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .stm-hint i {
+    animation: none !important;
+  }
+  .stm-body,
+  .stm-label {
+    transition: none !important;
+  }
+}

@@ -1,0 +1,389 @@
+/* NeptuneSection — Found on Paper Before It Was Found in the Sky */
+
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600&display=swap");
+
+.neptune-section {
+  --void-1: #02020a;
+  --void-2: #070a1a;
+  --cream: #ece7d8;
+  --cream-dim: #a9a89d;
+  --brass: #c3a065;
+
+  --neptune-a: #7fa4e6;
+  --neptune-b: #3b5aa6;
+  --neptune-c: #16234e;
+  --neptune-d: #0a1230;
+  --spot: #0c1030;
+  --ice: #cfe0ff;
+
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  background:
+    radial-gradient(ellipse 60% 55% at 82% 30%, rgba(59, 90, 166, 0.18), transparent 60%),
+    linear-gradient(180deg, var(--void-1) 0%, var(--void-2) 60%, var(--void-1) 100%);
+  padding: clamp(64px, 10vw, 128px) clamp(20px, 6vw, 72px);
+  font-family: "Inter", sans-serif;
+
+  position: relative;
+  overflow: hidden;
+  z-index: 310;
+  isolation: isolate;
+}
+
+.np-stars {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.np-star {
+  position: absolute;
+  border-radius: 50%;
+  background: #fff;
+  opacity: 0.5;
+  animation-name: np-twinkle;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+}
+
+@keyframes np-twinkle {
+  0%,
+  100% {
+    opacity: 0.12;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+.np-inner {
+  position: relative;
+  z-index: 1;
+  max-width: 1180px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 0.85fr 1.15fr;
+  align-items: center;
+  gap: clamp(36px, 6vw, 88px);
+}
+
+/* ---------- visual ---------- */
+.np-visual {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1 / 1;
+  width: 100%;
+  max-width: 420px;
+  margin: 0 auto;
+  opacity: 0;
+  transform: scale(0.85);
+  transition:
+    opacity 1s cubic-bezier(0.16, 0.8, 0.24, 1),
+    transform 1s cubic-bezier(0.16, 0.8, 0.24, 1);
+}
+
+.neptune-section.is-visible .np-visual {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.np-orbit-ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid rgba(207, 224, 255, 0.14);
+}
+
+.np-orbit-ring--outer {
+  width: 100%;
+  height: 100%;
+}
+
+.np-orbit-ring--inner {
+  width: 80%;
+  height: 80%;
+  border-color: rgba(207, 224, 255, 0.09);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .neptune-section.is-visible .np-orbit-ring--outer {
+    animation: np-spin 130s linear infinite;
+  }
+  .neptune-section.is-visible .np-orbit-ring--inner {
+    animation: np-spin 90s linear infinite reverse;
+  }
+}
+
+@keyframes np-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.np-sphere {
+  position: relative;
+  width: 58%;
+  height: 58%;
+  border-radius: 50%;
+  overflow: hidden;
+  background: radial-gradient(
+    circle at 36% 32%,
+    var(--neptune-a),
+    var(--neptune-b) 55%,
+    var(--neptune-c) 82%,
+    var(--neptune-d) 100%
+  );
+  box-shadow: 0 0 70px -10px rgba(90, 130, 220, 0.45);
+}
+
+.np-streaks {
+  position: absolute;
+  left: -40%;
+  top: -40%;
+  width: 180%;
+  height: 180%;
+  background: repeating-linear-gradient(
+    115deg,
+    rgba(255, 255, 255, 0.16) 0px,
+    rgba(255, 255, 255, 0.16) 2px,
+    transparent 2px,
+    transparent 22px
+  );
+  mix-blend-mode: screen;
+  opacity: 0.5;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .np-streaks {
+    animation: np-wind 9s linear infinite;
+  }
+}
+
+@keyframes np-wind {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(-9%, 6%);
+  }
+}
+
+.np-spot {
+  position: absolute;
+  width: 24%;
+  height: 16%;
+  left: 20%;
+  top: 56%;
+  border-radius: 50%;
+  background: var(--spot);
+  opacity: 0.65;
+  filter: blur(0.5px);
+}
+
+.np-shade {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 32% 28%, rgba(255, 255, 255, 0.22), transparent 40%),
+    radial-gradient(circle at 65% 72%, rgba(0, 0, 0, 0.5), transparent 60%),
+    radial-gradient(circle at 50% 50%, transparent 55%, rgba(0, 0, 0, 0.55) 100%);
+}
+
+/* ---------- content ---------- */
+.np-content {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity 0.9s cubic-bezier(0.16, 0.8, 0.24, 1) 0.15s,
+    transform 0.9s cubic-bezier(0.16, 0.8, 0.24, 1) 0.15s;
+}
+
+.neptune-section.is-visible .np-content {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.np-eyebrow {
+  margin: 0 0 14px;
+  font-size: 0.72rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--brass);
+  font-weight: 600;
+}
+
+.np-heading {
+  margin: 0 0 16px;
+  font-family: "Fraunces", serif;
+  font-weight: 700;
+  font-size: clamp(2.4rem, 6vw, 4.2rem);
+  color: var(--cream);
+  letter-spacing: -0.01em;
+}
+
+.np-lede {
+  margin: 0 0 clamp(28px, 4vw, 40px);
+  max-width: 46ch;
+  color: var(--cream-dim);
+  font-size: clamp(0.95rem, 1.6vw, 1.08rem);
+  line-height: 1.65;
+}
+
+.np-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: clamp(20px, 4vw, 40px);
+  padding-bottom: clamp(28px, 4vw, 36px);
+  margin-bottom: clamp(28px, 4vw, 36px);
+  border-bottom: 1px solid rgba(207, 224, 255, 0.14);
+}
+
+.np-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.np-stat-value {
+  font-family: "Fraunces", serif;
+  font-weight: 600;
+  font-size: clamp(1.25rem, 2.6vw, 1.65rem);
+  color: var(--ice);
+}
+
+.np-stat-label {
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--cream-dim);
+}
+
+.np-predict {
+  display: flex;
+  gap: 18px;
+}
+
+.np-predict-line {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 6px;
+}
+
+.np-predict-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--brass);
+  box-shadow: 0 0 0 4px rgba(195, 160, 101, 0.15);
+}
+
+.np-predict-dot--b {
+  background: var(--ice);
+  box-shadow: 0 0 0 4px rgba(207, 224, 255, 0.15);
+}
+
+.np-predict-track {
+  width: 1px;
+  flex: 1;
+  background: linear-gradient(180deg, var(--brass), var(--ice));
+  margin: 6px 0;
+  min-height: 44px;
+  transform-origin: top;
+  transform: scaleY(0);
+  transition: transform 0.9s cubic-bezier(0.16, 0.8, 0.24, 1) 0.5s;
+}
+
+.neptune-section.is-visible .np-predict-track {
+  transform: scaleY(1);
+}
+
+.np-predict-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.np-predict-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.np-predict-tag {
+  font-size: 0.66rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--brass);
+  font-weight: 600;
+}
+
+.np-predict-tag--b {
+  color: var(--ice);
+}
+
+.np-predict-text {
+  font-size: 0.88rem;
+  line-height: 1.55;
+  color: var(--cream-dim);
+  max-width: 52ch;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .neptune-section *,
+  .neptune-section *::before,
+  .neptune-section *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .np-visual,
+  .np-content {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .np-predict-track {
+    transform: scaleY(1) !important;
+  }
+}
+
+/* ---------- responsive ---------- */
+@media (max-width: 860px) {
+  .np-inner {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .np-lede {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .np-stats {
+    justify-content: center;
+  }
+
+  .np-predict {
+    text-align: left;
+  }
+
+  .np-visual {
+    max-width: 280px;
+  }
+}
+
+@media (max-width: 480px) {
+  .np-visual {
+    max-width: 220px;
+  }
+
+  .np-stats {
+    gap: 20px;
+  }
+}

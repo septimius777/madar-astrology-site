@@ -1,0 +1,380 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif:wght@600;700;800&family=Vazirmatn:wght@400;500;600&display=swap');
+
+.vem-section {
+  --void-1: #060509;
+  --void-2: #14131a;
+  --star: #e9e6df;
+
+  --ink-title: #f4efe3;
+  --ink-label: #c3b596;
+  --ink-sub: #948d84;
+  --ink-hair: rgba(244, 239, 227, 0.1);
+
+  --venus-1: #d9b98a;
+  --venus-2: #96703f;
+  --earth-ocean-1: #4d7ea8;
+  --earth-ocean-2: #16324a;
+  --earth-land: #5b8a56;
+  --mars-1: #b56d4a;
+  --mars-2: #5c2c1b;
+
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(ellipse 90% 60% at 50% 36%, var(--void-2) 0%, var(--void-1) 60%, #030205 100%);
+  padding: 3rem 1.5rem;
+  font-family: 'Vazirmatn', Tahoma, sans-serif;
+  color: var(--ink-title);
+  z-index: 101;
+}
+
+.vem-section, .vem-section * {
+  box-sizing: border-box;
+}
+
+/* ================= backdrop: quiet, static, matches the Mercury card ================= */
+
+.vem-stars {
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(1px 1px at 10% 15%, var(--star) 100%, transparent),
+    radial-gradient(1px 1px at 24% 55%, var(--star) 100%, transparent),
+    radial-gradient(1px 1px at 38% 28%, var(--star) 100%, transparent),
+    radial-gradient(1px 1px at 52% 72%, var(--star) 100%, transparent),
+    radial-gradient(1px 1px at 64% 12%, var(--star) 100%, transparent),
+    radial-gradient(1px 1px at 74% 48%, var(--star) 100%, transparent),
+    radial-gradient(1px 1px at 86% 30%, var(--star) 100%, transparent),
+    radial-gradient(1px 1px at 92% 66%, var(--star) 100%, transparent),
+    radial-gradient(1px 1px at 16% 84%, var(--star) 100%, transparent),
+    radial-gradient(1px 1px at 96% 90%, var(--star) 100%, transparent);
+  background-repeat: repeat;
+  background-size: 340px 340px;
+  opacity: 0.45;
+  pointer-events: none;
+  z-index: 102;
+}
+
+.vem-halo {
+  position: absolute;
+  top: 30%;
+  left: 50%;
+  width: 120vmin;
+  height: 120vmin;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, rgba(244, 239, 227, 0.05) 0%, transparent 60%);
+  pointer-events: none;
+  z-index: 103;
+}
+
+/* ================= layout ================= */
+
+.vem-content {
+  position: relative;
+  width: 100%;
+  max-width: 460px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2.75rem;
+  z-index: 110;
+}
+
+.vem-stage-wrap {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  z-index: 111;
+}
+
+/* ================= orbit stage ================= */
+
+.vem-stage {
+  --orbit-size: clamp(230px, 76vw, 360px);
+  --radius: calc(var(--orbit-size) / 2);
+  --orbit-duration: 18s;
+  position: relative;
+  width: var(--orbit-size);
+  height: var(--orbit-size);
+  z-index: 112;
+}
+
+.vem-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1px solid var(--ink-hair);
+  z-index: 113;
+}
+
+/* the title, centered inside the circles */
+
+.vem-core {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 62%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.4rem;
+  z-index: 119;
+}
+
+.vem-core-eyebrow {
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  color: var(--ink-label);
+}
+
+.vem-core-title {
+  margin: 0;
+  font-family: 'Noto Serif', 'Noto Serif Arabic', Georgia, serif;
+  font-weight: 700;
+  font-size: clamp(1rem, 5.2vw, 1.3rem);
+  line-height: 1.3;
+  color: var(--ink-title);
+}
+
+.vem-core-sub {
+  font-size: 0.68rem;
+  color: var(--ink-sub);
+  letter-spacing: 0.02em;
+}
+
+.vem-orbit {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  animation: vem-spin var(--orbit-duration) linear infinite;
+  z-index: 114;
+}
+
+@keyframes vem-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.vem-arm {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--radius);
+  height: 2px;
+  transform-origin: 0 0;
+  z-index: 115;
+}
+
+.vem-arm-venus { transform: rotate(0deg); }
+.vem-arm-earth { transform: rotate(120deg); }
+.vem-arm-mars { transform: rotate(240deg); }
+
+.vem-planet-wrap {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translate(50%, -50%);
+  z-index: 116;
+}
+
+.vem-planet {
+  position: relative;
+  border-radius: 50%;
+  overflow: hidden;
+  z-index: 117;
+}
+
+/* planet sizes scale with the orbit itself so they read clearly by shape */
+
+.vem-venus { width: calc(var(--orbit-size) * 0.155); height: calc(var(--orbit-size) * 0.155); }
+.vem-earth { width: calc(var(--orbit-size) * 0.185); height: calc(var(--orbit-size) * 0.185); }
+.vem-mars  { width: calc(var(--orbit-size) * 0.125); height: calc(var(--orbit-size) * 0.125); }
+
+/* ---------- Venus ---------- */
+
+.vem-venus {
+  background: radial-gradient(circle at 32% 28%, var(--venus-1), var(--venus-2) 80%);
+  box-shadow:
+    inset -5px -7px 12px rgba(0, 0, 0, 0.45),
+    0 6px 16px rgba(0, 0, 0, 0.5);
+}
+
+.vem-venus-clouds {
+  position: absolute;
+  inset: 0;
+  z-index: 118;
+  background:
+    radial-gradient(ellipse at 60% 32%, rgba(255, 255, 255, 0.28) 0%, transparent 55%),
+    radial-gradient(ellipse at 28% 68%, rgba(255, 255, 255, 0.16) 0%, transparent 50%);
+}
+
+/* ---------- Earth ---------- */
+
+.vem-earth {
+  background: radial-gradient(circle at 32% 28%, var(--earth-ocean-1), var(--earth-ocean-2) 82%);
+  box-shadow:
+    inset -5px -7px 14px rgba(0, 0, 0, 0.5),
+    0 6px 18px rgba(0, 0, 0, 0.5);
+}
+
+.vem-earth-land {
+  position: absolute;
+  z-index: 118;
+  background: var(--earth-land);
+  border-radius: 40% 60% 55% 45%;
+}
+
+.vem-land-1 { width: 42%; height: 36%; top: 16%; left: 10%; }
+.vem-land-2 { width: 30%; height: 26%; top: 54%; left: 48%; }
+.vem-land-3 { width: 22%; height: 20%; top: 18%; left: 60%; }
+
+.vem-earth-cloud {
+  position: absolute;
+  inset: 0;
+  z-index: 118;
+  background:
+    radial-gradient(ellipse at 65% 22%, rgba(255, 255, 255, 0.22) 0%, transparent 42%),
+    radial-gradient(ellipse at 22% 62%, rgba(255, 255, 255, 0.16) 0%, transparent 42%);
+}
+
+/* ---------- Mars ---------- */
+
+.vem-mars {
+  background: radial-gradient(circle at 32% 28%, var(--mars-1), var(--mars-2) 82%);
+  box-shadow:
+    inset -4px -6px 10px rgba(0, 0, 0, 0.5),
+    0 5px 14px rgba(0, 0, 0, 0.5);
+}
+
+.vem-mars-dark {
+  position: absolute;
+  z-index: 118;
+  width: 46%;
+  height: 36%;
+  top: 42%;
+  left: 14%;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 50%;
+}
+
+.vem-mars-polar {
+  position: absolute;
+  z-index: 118;
+  width: 34%;
+  height: 22%;
+  top: 4%;
+  left: 32%;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 50%;
+  filter: blur(0.4px);
+}
+
+/* ================= detail rows — same rhythm as the Mercury card ================= */
+
+.vem-rows {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  z-index: 130;
+}
+
+.vem-row {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.3rem;
+  padding: 1.1rem 0;
+  z-index: 131;
+}
+
+.vem-row-eyebrow {
+  font-size: 0.66rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  color: var(--ink-label);
+}
+
+.vem-row-title {
+  margin: 0;
+  font-family: 'Noto Serif', 'Noto Serif Arabic', Georgia, serif;
+  font-weight: 800;
+  font-size: 1.5rem;
+  color: var(--ink-title);
+}
+
+.vem-row-sub {
+  margin: 0;
+  max-width: 320px;
+  font-size: 0.8rem;
+  line-height: 1.6;
+  color: var(--ink-sub);
+}
+
+.vem-row-divider {
+  width: 42px;
+  height: 1px;
+  background: var(--ink-hair);
+  z-index: 130;
+}
+
+/* ================= desktop ================= */
+
+@media (min-width: 768px) {
+  .vem-section {
+    padding: 6rem 2rem;
+  }
+
+  .vem-content {
+    max-width: 620px;
+    gap: 3.5rem;
+  }
+
+  .vem-stage {
+    --orbit-size: clamp(320px, 30vw, 420px);
+    --orbit-duration: 24s;
+  }
+
+  .vem-core-eyebrow { font-size: 0.7rem; }
+  .vem-core-title { font-size: 1.55rem; }
+  .vem-core-sub { font-size: 0.78rem; }
+
+  .vem-rows {
+    flex-direction: row;
+    align-items: stretch;
+    justify-content: center;
+    gap: 2.5rem;
+  }
+
+  .vem-row {
+    flex: 1;
+    max-width: 220px;
+    padding: 0;
+  }
+
+  .vem-row-divider {
+    width: 1px;
+    height: auto;
+    align-self: stretch;
+  }
+
+  .vem-row-title {
+    font-size: 1.7rem;
+  }
+}

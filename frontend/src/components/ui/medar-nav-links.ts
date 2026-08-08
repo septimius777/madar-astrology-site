@@ -3,7 +3,13 @@
  * MedarHeader, MedarNavPanel, and MedarFooter all import this —
  * add or reorder a link once, and it updates everywhere.
  */
-export const NAV_LINKS = [
+
+export interface NavLink {
+  href: string;
+  label: string;
+}
+
+export const NAV_LINKS: NavLink[] = [
   { href: "#method", label: "روش" },
   { href: "#chart", label: "زایچه‌ی تو" },
   { href: "#gallery", label: "بروج" },

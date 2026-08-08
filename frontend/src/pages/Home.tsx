@@ -1,7 +1,7 @@
 import { planets } from "../data/planets";
 import { siteContent } from "../content/site";
 import { useActiveSection } from "../hooks/useActiveSection";
-import { useScrollProgress } from "../hooks/useScrollProgress";
+
 import GalaxyBackground from "../components/backgrounds/GalaxyBackground";
 import Header from "../components/Header";
 import HeroSection from "../components/sections/HeroSection";
@@ -10,7 +10,6 @@ import ScrollProgress from "../components/ui/ScrollProgress";
 
 export default function Home() {
   const activeIndex = useActiveSection(planets.length);
-  const progress = useScrollProgress();
 
   const otherPlanets = planets.filter((p) => p.id !== "sun");
 
@@ -18,7 +17,7 @@ export default function Home() {
     <div className="relative">
       <GalaxyBackground activeIndex={activeIndex} />
       <Header />
-      <ScrollProgress progress={progress} activeIndex={activeIndex} />
+      <ScrollProgress />
 
       <main>
         <HeroSection />

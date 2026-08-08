@@ -1,0 +1,368 @@
+/* OrbitalGiants — Giants of the Outer Dark */
+
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600&display=swap");
+
+.orbital-giants {
+  --void-1: #05050a;
+  --void-2: #0b0b17;
+  --cream: #ece7d8;
+  --cream-dim: #b9b3a0;
+  --brass: #c3a065;
+  --brass-dim: #8c774f;
+  --jupiter-a: #e4cfa1;
+  --jupiter-b: #b9824f;
+  --jupiter-c: #7c4f30;
+  --jupiter-spot: #a85a3a;
+  --saturn-a: #f0e2ba;
+  --saturn-b: #cdab74;
+  --ring-saturn: #d9c391;
+  --uranus-a: #d8f0ec;
+  --uranus-b: #8fc6bf;
+  --ring-uranus: #e4f7f3;
+
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse 70% 50% at 50% -10%, #14141f 0%, transparent 60%),
+    linear-gradient(180deg, var(--void-1) 0%, var(--void-2) 55%, var(--void-1) 100%);
+  padding: clamp(64px, 10vw, 120px) clamp(20px, 5vw, 64px);
+  font-family: "Inter", sans-serif;
+  z-index: 210;
+  isolation: isolate;
+}
+
+.og-haze {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 22% 60%, rgba(184, 130, 79, 0.1), transparent 40%),
+    radial-gradient(circle at 78% 55%, rgba(143, 198, 191, 0.08), transparent 42%);
+  filter: blur(40px);
+}
+
+.og-stars {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.og-star {
+  position: absolute;
+  border-radius: 50%;
+  background: #fff;
+  opacity: 0.5;
+  animation-name: og-twinkle;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+}
+
+@keyframes og-twinkle {
+  0%,
+  100% {
+    opacity: 0.15;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+.og-inner {
+  position: relative;
+  z-index: 1;
+  max-width: 1180px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.og-eyebrow {
+  margin: 0 0 14px;
+  font-size: 0.72rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--brass);
+  font-weight: 600;
+}
+
+.og-heading {
+  margin: 0 0 16px;
+  font-family: "Fraunces", serif;
+  font-weight: 600;
+  font-style: normal;
+  font-size: clamp(1.9rem, 5vw, 3.2rem);
+  color: var(--cream);
+  letter-spacing: -0.01em;
+}
+
+.og-lede {
+  margin: 0 auto clamp(40px, 7vw, 72px);
+  max-width: 520px;
+  color: var(--cream-dim);
+  font-size: clamp(0.9rem, 1.6vw, 1.05rem);
+  line-height: 1.6;
+}
+
+.og-row {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: clamp(10px, 4vw, 56px);
+  --planet-base: clamp(58px, 19vw, 172px);
+}
+
+.og-orbit {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(var(--planet-base) * 0.42);
+  height: 44px;
+  width: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.og-orbit path {
+  fill: none;
+  stroke: var(--brass-dim);
+  stroke-width: 1.4;
+  opacity: 0.45;
+  vector-effect: non-scaling-stroke;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 1.4s cubic-bezier(0.2, 0.7, 0.2, 1) 0.1s;
+}
+
+.orbital-giants.is-visible .og-orbit path {
+  stroke-dashoffset: 0;
+}
+
+.og-card {
+  position: relative;
+  z-index: 1;
+  flex: 1 1 0;
+  min-width: 0;
+  max-width: 220px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(10px, 1.6vw, 16px);
+  opacity: 0;
+  transform: translateY(34px) scale(0.92);
+  transition:
+    opacity 0.85s cubic-bezier(0.16, 0.8, 0.24, 1) var(--delay),
+    transform 0.85s cubic-bezier(0.16, 0.8, 0.24, 1) var(--delay);
+}
+
+.orbital-giants.is-visible .og-card {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.og-visual {
+  position: relative;
+  width: var(--planet-base);
+  height: var(--planet-base);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.og-sphere {
+  position: relative;
+  width: calc(var(--planet-base) * var(--scale));
+  height: calc(var(--planet-base) * var(--scale));
+  border-radius: 50%;
+  overflow: hidden;
+  transition:
+    transform 0.5s ease,
+    filter 0.5s ease;
+}
+
+.og-card:hover .og-sphere {
+  transform: scale(1.06);
+}
+
+.og-shade {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 34% 30%, rgba(255, 255, 255, 0.16), transparent 42%),
+    radial-gradient(circle at 62% 70%, rgba(0, 0, 0, 0.55), transparent 60%),
+    radial-gradient(circle at 50% 50%, transparent 55%, rgba(0, 0, 0, 0.55) 100%);
+  pointer-events: none;
+}
+
+/* Jupiter */
+.og-sphere--jupiter {
+  background: linear-gradient(180deg, var(--jupiter-a), var(--jupiter-b));
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.03);
+}
+
+.og-bands {
+  position: absolute;
+  left: -15%;
+  right: -15%;
+  top: -40%;
+  height: 220%;
+  background: repeating-linear-gradient(
+    180deg,
+    var(--jupiter-a) 0 6%,
+    var(--jupiter-b) 6% 12%,
+    var(--jupiter-c) 12% 15%,
+    var(--jupiter-b) 15% 21%,
+    var(--jupiter-a) 21% 27%
+  );
+  animation: og-drift 30s linear infinite alternate;
+  opacity: 0.9;
+}
+
+.og-storm {
+  position: absolute;
+  width: 26%;
+  height: 14%;
+  left: 58%;
+  top: 52%;
+  border-radius: 50%;
+  background: var(--jupiter-spot);
+  opacity: 0.75;
+  filter: blur(0.4px);
+}
+
+@keyframes og-drift {
+  0% {
+    transform: translateY(-4%);
+  }
+  100% {
+    transform: translateY(4%);
+  }
+}
+
+/* Saturn */
+.og-sphere--saturn {
+  background: radial-gradient(circle at 38% 32%, var(--saturn-a), var(--saturn-b) 75%);
+}
+
+.og-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  border-radius: 50%;
+  border-style: solid;
+  border-left-color: transparent;
+  border-right-color: transparent;
+  z-index: 0;
+  transition: transform 0.6s ease;
+}
+
+.og-ring--saturn {
+  width: 190%;
+  height: 190%;
+  border-width: 7%;
+  border-top-color: var(--ring-saturn);
+  border-bottom-color: var(--ring-saturn);
+  transform: translate(-50%, -50%) rotate(-16deg) scaleY(0.34);
+  opacity: 0.85;
+}
+
+.og-card--saturn:hover .og-ring--saturn {
+  transform: translate(-50%, -50%) rotate(-16deg) scaleY(0.34) scale(1.04);
+}
+
+/* Uranus */
+.og-sphere--uranus {
+  background: radial-gradient(circle at 40% 34%, var(--uranus-a), var(--uranus-b) 78%);
+}
+
+.og-ring--uranus {
+  width: 160%;
+  height: 160%;
+  border-width: 2.4%;
+  border-top-color: var(--ring-uranus);
+  border-bottom-color: var(--ring-uranus);
+  transform: translate(-50%, -50%) rotate(80deg) scaleY(0.18);
+  opacity: 0.55;
+}
+
+.og-card--uranus:hover .og-ring--uranus {
+  transform: translate(-50%, -50%) rotate(80deg) scaleY(0.18) scale(1.08);
+}
+
+.og-tag {
+  margin: 8px 0 0;
+  font-size: 0.62rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--brass);
+  font-weight: 600;
+}
+
+.og-name {
+  margin: 0;
+  font-family: "Fraunces", serif;
+  font-weight: 700;
+  font-size: clamp(1.05rem, 3.4vw, 1.7rem);
+  color: var(--cream);
+  letter-spacing: 0.01em;
+}
+
+.og-desc {
+  margin: 0;
+  font-size: clamp(0.66rem, 1.6vw, 0.82rem);
+  line-height: 1.5;
+  color: var(--cream-dim);
+  max-width: 22ch;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .orbital-giants *,
+  .orbital-giants *::before,
+  .orbital-giants *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .og-card {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .og-orbit path {
+    stroke-dashoffset: 0 !important;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .orbital-giants.is-visible .og-card--jupiter {
+    animation: og-float 6.4s ease-in-out 0.9s infinite;
+  }
+  .orbital-giants.is-visible .og-card--saturn {
+    animation: og-float 7.2s ease-in-out 1.1s infinite;
+  }
+  .orbital-giants.is-visible .og-card--uranus {
+    animation: og-float 5.8s ease-in-out 1.3s infinite;
+  }
+}
+
+@keyframes og-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+@media (max-width: 480px) {
+  .og-row {
+    gap: clamp(8px, 3.4vw, 20px);
+  }
+
+  .og-desc {
+    display: none;
+  }
+}

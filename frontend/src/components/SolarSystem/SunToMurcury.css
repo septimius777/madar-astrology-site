@@ -37,18 +37,32 @@ body {
 
 .stm-root {
   position: relative;
+  z-index: 100;
   width: 100%;
-  min-height: 100vh;
+  isolation: isolate;
+  background: #030306;
 }
 
+/* scroll room for the sun→mercury morph */
 .stm-runway {
-  height: 280vh; /* shorter = less lag on long pages */
+  height: 220vh;
   pointer-events: none;
+}
+
+/* pin the visual stage to the viewport while this section scrolls */
+.stm-pin {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+  width: 100%;
+  overflow: hidden;
+  z-index: 1;
 }
 
 /* ---------- Space (one star layer only) ---------- */
 .stm-space {
-  position: fixed;
+  position: absolute;
   inset: 0;
   z-index: 0;
   background: radial-gradient(ellipse 120% 80% at 50% 45%, #0b0b14 0%, #030306 70%);
@@ -74,7 +88,7 @@ body {
 
 /* Warm ambient – fades with Sun */
 .stm-ambient {
-  position: fixed;
+  position: absolute;
   inset: 0;
   z-index: 1;
   background: radial-gradient(
@@ -87,7 +101,7 @@ body {
 
 /* ---------- Stage ---------- */
 .stm-stage {
-  position: fixed;
+  position: absolute;
   inset: 0;
   z-index: 10;
   display: grid;
@@ -257,7 +271,7 @@ body {
 
 /* ---------- Labels – controlled by JS vars, stay visible ---------- */
 .stm-label {
-  position: fixed;
+  position: absolute;
   left: 50%;
   text-align: center;
   z-index: 20;
@@ -309,7 +323,7 @@ body {
 
 /* ---------- Progress ---------- */
 .stm-bar {
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
   width: 100%;
@@ -328,7 +342,7 @@ body {
 
 /* ---------- Hint ---------- */
 .stm-hint {
-  position: fixed;
+  position: absolute;
   bottom: 22px;
   left: 50%;
   transform: translateX(-50%);

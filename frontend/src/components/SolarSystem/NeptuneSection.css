@@ -16,19 +16,20 @@
   --spot: #0c1030;
   --ice: #cfe0ff;
 
-  position: relative;
-  overflow: hidden;
+  position: sticky;
+  top: 0;
+  z-index: 400;
   isolation: isolate;
+  overflow: hidden;
+  min-height: 100vh;
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
   background:
     radial-gradient(ellipse 60% 55% at 82% 30%, rgba(59, 90, 166, 0.18), transparent 60%),
     linear-gradient(180deg, var(--void-1) 0%, var(--void-2) 60%, var(--void-1) 100%);
   padding: clamp(64px, 10vw, 128px) clamp(20px, 6vw, 72px);
   font-family: "Inter", sans-serif;
-
-  position: relative;
-  overflow: hidden;
-  z-index: 310;
-  isolation: isolate;
 }
 
 .np-stars {

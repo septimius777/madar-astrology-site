@@ -20,15 +20,20 @@
   --uranus-b: #8fc6bf;
   --ring-uranus: #e4f7f3;
 
-  position: relative;
+  position: sticky;
+  top: 0;
+  min-height: 100vh;
+  min-height: 100svh;
   overflow: hidden;
   background:
     radial-gradient(ellipse 70% 50% at 50% -10%, #14141f 0%, transparent 60%),
     linear-gradient(180deg, var(--void-1) 0%, var(--void-2) 55%, var(--void-1) 100%);
   padding: clamp(64px, 10vw, 120px) clamp(20px, 5vw, 64px);
   font-family: "Inter", sans-serif;
-  z-index: 210;
+  z-index: 300;
   isolation: isolate;
+  display: flex;
+  align-items: center;
 }
 
 .og-haze {

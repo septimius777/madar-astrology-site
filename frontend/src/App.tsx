@@ -3,6 +3,8 @@ import { Routes, Route } from "react-router-dom";
 // import HomePage from "./pages/HomePage";
 import MedarPage from "./pages/MedarPage";
 import SolarSystem from "./pages/SolarSystem";
+import SignUp from "./pages/SignUp";
+import Login from "./pages/Login";
 // import SolarPage from "./pages/SolarPage";
 // import Home from "./pages/Home";
 export default function App() {
@@ -13,6 +15,8 @@ export default function App() {
       <Route path="/solarPage" element={<SolarPage />} />
       <Route path="/homepage" element={<HomePage />} /> */}
       <Route path="/medarpage" element={<MedarPage />} />
+      <Route path="/signup" element={<SignUp />} />
+      <Route path="/login" element={<Login />} />
       <Route path="/solarsystem" element={<SolarSystem />} />
     </Routes>
   );
